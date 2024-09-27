@@ -2,17 +2,22 @@
 
 import paho.mqtt.client as mqtt
 import time
+from datetime import datetime
+import json
 
 sub_topic = "command/workplan/grader"
 pub_topic = "equipment/grader"
 withpoint_url = "withpoints.asuscomm.com"   # 브로커 주소
+
+current_time = datetime.now()
+timestamp_str = current_time.strftime("%Y-%m-%d %H:%M:%S")
 
 payload ={
   "grd_mac_addr": "AB:BC:CD:DE:EF:F0",
   "grd_protocol_id": "A",
   "grd_type": 1,
   "grd_id": "ABCD-1243-QWER-5678",
-  "Timestamp": "2022-05-16 17:00:00",
+  "Timestamp": timestamp_str,
   "grd_bdy_lttd": 35.943114,
   "grd_bdy_lgtd": 126.577257,
   "grd_bdy_altd": 67.596,
@@ -51,7 +56,11 @@ mqtt_client.connect(withpoint_url, 50592, 60) # 브로커에 연결
 mqtt_client.loop_start()
 
 while True:
-    mqtt_client.publish(pub_topic, str(payload), qos=0, retain=False) # 메시지 발행
+    current_time = datetime.now()
+    timestamp_str = current_time.strftime("%Y-%m-%d %H:%M:%S")
+    payload["Timestamp"]=timestamp_str
+    print(payload)
+    mqtt_client.publish(pub_topic, json.dumps(payload), qos=0, retain=False) # 메시지 발행
     time.sleep(1) # 1초 대기
 
 

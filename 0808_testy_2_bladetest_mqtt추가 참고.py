@@ -326,6 +326,9 @@ class Server_Client():
         mqtt_client.loop_start()
 
         while True:
+            current_time = datetime.now()
+            timestamp_str = current_time.strftime("%Y-%m-%d %H:%M:%S")
+            payload["Timestamp"]=timestamp_str
             mqtt_client.publish(pub_topic, str(payload), qos=0, retain=False) # 메시지 발행
             if self.stop_event.is_set():
                 break
