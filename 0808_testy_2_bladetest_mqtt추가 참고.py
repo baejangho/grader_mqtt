@@ -329,7 +329,7 @@ class Server_Client():
             current_time = datetime.now()
             timestamp_str = current_time.strftime("%Y-%m-%d %H:%M:%S")
             payload["Timestamp"]=timestamp_str
-            mqtt_client.publish(pub_topic, str(payload), qos=0, retain=False) # 메시지 발행
+            mqtt_client.publish(pub_topic, json.dumps(payload), qos=0, retain=False) # 메시지 발행
             if self.stop_event.is_set():
                 break
             time.sleep(1) # 1초 대기
